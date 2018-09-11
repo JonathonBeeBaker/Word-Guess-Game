@@ -1,0 +1,32 @@
+body {
+    background-color: rgb(3, 78, 66);
+}
+.container {
+    background-color: rgb(3, 73, 63);
+}
+.jumbotron {
+
+    background-color: green;
+}
+
+h1 {
+    color: #fff;
+
+}
+
+.image {
+   
+    margin: 25px;
+}
+
+p {
+    text-align: center;
+}
+
+.col-left {
+    background-color: rgb(146, 233, 240);
+}
+
+.col-right {
+    background-color: rgb(158, 201, 198);
+}
