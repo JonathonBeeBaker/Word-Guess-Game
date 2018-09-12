@@ -3,6 +3,7 @@ body {
 }
 .container {
     background-color: rgb(3, 73, 63);
+    text-align: center;
 }
 .jumbotron {
 
@@ -12,6 +13,12 @@ body {
 h1 {
     color: #fff;
 
+}
+
+
+h2,h3,
+h4,h5,h6 {
+    padding: 5px;
 }
 
 .image {
@@ -24,9 +31,35 @@ p {
 }
 
 .col-left {
-    background-color: rgb(146, 233, 240);
+    background-color: green;
+    border: 5px solid #fff; 
+    margin-top: 20px;
+    margin-right: 2px;
+    min-height: 500px; 
+    padding-top: 20px;  
 }
 
 .col-right {
-    background-color: rgb(158, 201, 198);
+    background-color: rgb(135, 236, 206);
+    border: 5px solid #fff;
+    margin-top: 20px;
+    margin-left: 2px;
+    min-height: 500px;
+    padding-top: 20px;
 }
+
+
+
+#title-image, #gameover-image, #youwin-image{ 
+    display: block;
+    margin: 0 auto;
+}
+
+#currentWord {
+    letter-spacing: 10px;
+}
+
+#pressKeyTryAgain, 
+#gameover-image, 
+#youwin-image { display: none;}
+
