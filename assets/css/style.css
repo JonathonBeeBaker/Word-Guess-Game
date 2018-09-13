@@ -1,65 +1,68 @@
-body {
-    background-color: rgb(3, 78, 66);
-}
-.container {
-    background-color: rgb(3, 73, 63);
-    text-align: center;
-}
-.jumbotron {
-
-    background-color: green;
-}
-
-h1 {
-    color: #fff;
+body{
+    font-family: 'Special Elite', Verdana, Geneva, sans-serif;
+    background-color: #025a31; 
+	color: #ffffff;
 
 }
 
 
-h2,h3,
-h4,h5,h6 {
-    padding: 5px;
+.jumbotron{
+	background-color: #05a756;
+	color: #ffffff;
+	font-family: 'Crete Round', "Times New Roman", serif;
+	margin-bottom: 1%;
+	padding-top: .5%;
+	padding-bottom: 2%;
 }
 
-.image {
-   
-    margin: 25px;
+@media screen and (max-width: 767px){
+	img{
+		width: 50% !important;
+	}
+	.left{
+		padding-top: 20px;
+	}
+
 }
 
-p {
-    text-align: center;
+h2{
+	font-family: 'Sigmar One', Verdana, Geneva, sans-serif;
+	color: #025a31;
 }
 
-.col-left {
-    background-color: green;
-    border: 5px solid #fff; 
-    margin-top: 20px;
-    margin-right: 2px;
-    min-height: 500px; 
-    padding-top: 20px;  
+img{
+	border-radius: 6px;
+	width: 100%;
 }
 
-.col-right {
-    background-color: rgb(135, 236, 206);
-    border: 5px solid #fff;
-    margin-top: 20px;
-    margin-left: 2px;
-    min-height: 500px;
-    padding-top: 20px;
+#currentWord, #guessesLeft, #lettersGuessed, #wins, #losses{
+	font-size: 24px;
+}
+
+.left{
+	background-color: #05a756;
+	border-radius: 6px;
+}
+
+.right{
+	padding-right: 0;
+}
+
+.row{
+	border-radius: 6px;
+}
+
+
+.row.match-my-cols {
+    overflow: hidden; 
+}
+
+.row.match-my-cols [class*="col-"]{
+    margin-bottom: -99999px;
+    padding-bottom: 99999px;
+
 }
 
 
 
-#title-image, #gameover-image, #youwin-image{ 
-    display: block;
-    margin: 0 auto;
-}
-
-#currentWord {
-    letter-spacing: 10px;
-}
-
-#pressKeyTryAgain, 
-#gameover-image, 
-#youwin-image { display: none;}
-
+font-family: 'Crete Round', serif;

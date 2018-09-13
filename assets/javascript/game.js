@@ -1,264 +1,115 @@
-// 
-// Pick a random word from an array of 10 words with onKey event
+var alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
+var parks = ["banff", "greatbasin", "guadalupe", "haleakala", "olympic", "saguaro", "sequoia", "smokymountains", "yellowstone", "yosemite", "arches", "redwoodf", "grandcanyon", "denali", "joshuatree", "bryce", "zion", "carlsbad"];
 
-var parks = [   
-                "banff",
-                "great basin",
-                "guadalupe",
-                "haleakala",
-                "olympic",
-                "saguaro",
-                "sequoia",
-                "smoky mountains",
-                "yosemite",
-                "yellowstone"
-];
+var gameStarted = false;
+var currentWord;
+var wordAsDashes;
+var guessesLeft;
+var lettersGuessed;
+var numWins = 0;
+var numLosses = 0;
+var getNewWord;
+var wordPlace; //place in park array
+var correctGuesses;
+var wordAsArr = [];
+var dashesArray = [];
+var images = [];
 
-var parkSelector = parks[Math.floor(Math.random() * parks.length)];
-
-var answerArray = [];
-for (var i = 0; i < parks.length; i++) {
-
-    answerArray[i] = "_";
-  }
-  var remainingLetters = parks.length;
-  console.log("remainingletters",remainingLetters)
-
-  startGame();
-document.onkeyup = function(event){
-    /*
-    1. its going to take in the letter that we type in
-    2. its going to pass it through the CheckLetter function 
-    */
-    var letterGuessed = String.fromCharCode(event.keyCode).toLowerCase();
-    console.log("this is the letter we typed", letterGuessed)
-    checkLetters(letterGuessed)
-    roundComplete();
-
-
+function initialize() {
+	gameStarted = true;
+	lettersGuessed = [];
+	correctGuesses = 0;
+	wordPlace = Math.floor(Math.random() * 18);
+	currentWord = parks[wordPlace];			//string
+	guessesLeft = 17 - currentWord.length;		//longer words get less guesses
+	wordAsDashes = makeIntoDashes(currentWord);	//string of dashes
+	wordAsArr = currentWord.split('');			//array with letters
+	dashesArray = wordAsDashes.split('');		//array with dashes
+	document.getElementById("currentWord").innerHTML = wordAsDashes;
+	document.getElementById("lettersGuessed").innerHTML = "--";
+	document.getElementById("guessesLeft").innerHTML = guessesLeft;
 }
 
-
-
-
-var ctx;
-var thingelm;
-var alphabet = "abcdefghijklmnopqrstuvwxyz";
-var alphabety = 300;
-var alphabetx = 20;
-var alphabetwidth = 25;
-var secret;
-var lettersguessed = 0;
-var secretx = 160;
-var secrety = 50;
-var secretwidth = 50;
-var gallowscolor = "black";
-var facecolor = "orange";
-var bodycolor = "orange";
-var noosecolor = "#32CD32";
-var bodycenterx = 70;
-
-var steps = [
-    drawgallows,
-    drawhead,
-    drawbody,
-    drawrightarm,
-    drawleftarm,
-    drawrightleg,
-    drawleftleg,
-    drawnoose,
-];
-
-var cur = 0;
-function drawgallows() {
-    ctx.lineWidth = 8;
-    ctx.strokeStyle = gallowscolor;
-    ctx.beginPath();
-    ctx.moveTo(2, 180);
-    ctx.lineTo(40, 180);
-    ctx.moveTo(20, 180);
-    ctx.lineTo(20, 40);
-    ctx.moveTo(2, 40);
-    ctx.lineTo(80, 40);
-    ctx.stroke();
-    ctx.closePath();
+// Make each word into underscores, visually like hangman
+function makeIntoDashes(word) {
+	var dashes = "";
+	for (i = 0; i < word.length - 1; i++) {
+		dashes += "_ ";
+	}
+	dashes += "_";
+	return dashes;
 }
 
-function drawhead() {
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = facecolor;
-    ctx.save();
-    ctx.scale(.6, 1);
-    ctx.beginPath();
-    ctx.arc(bodycenterx / .6, 80, 10, 0, Math.PI * 2, false);
-    ctx.stroke();
-    ctx.closePath();
-    ctx.restore();
+// Main function that controls what to do with each keystroke
+function playGame(letter) {
+	var letter = letter.toLowerCase();
+
+	// Checks if key is a letter
+	if (alphabet.indexOf(letter) > -1) {
+		if (wordAsArr.indexOf(letter) > -1) {
+			correctGuesses++;
+			displayLetter(letter);
+		}
+		else {
+			if (lettersGuessed.indexOf(letter) > -1) {
+				return;
+			}
+			else {
+				guessesLeft--;
+				document.getElementById("guessesLeft").innerHTML = guessesLeft;
+				lettersGuessed.push(letter);
+				document.getElementById("lettersGuessed").innerHTML = lettersGuessed.join(' ');
+				if (guessesLeft == 0) {
+					alert("Sorry! The correct answer is " + currentWord);
+					initialize();
+					numLosses++;
+					document.getElementById("losses").innerHTML = numLosses;
+				}
+			}
+		}
+	}
 }
 
-function drawbody() {
-    ctx.strokeStyle = bodycolor;
-    ctx.beginPath();
-    ctx.moveTo(bodycenterx, 90);
-    ctx.lineTo(bodycenterx, 125);
-    ctx.stroke();
-    ctx.closePath();
+// Displays letter if it's in word
+function displayLetter(letter) {
+	// for each char in wordAsDashes, if matches currentWord --> display
+	for (i = 0; i < currentWord.length; i++) {
+		if (letter == wordAsArr[i]) {
+			dashesArray[i * 2] = letter;
+			console.log(dashesArray);
+		}
+	}
+	document.getElementById("currentWord").innerHTML = dashesArray.join("");
+	checkForWin();
 }
 
-function drawrightarm() {
-    ctx.beginPath();
-    ctx.moveTo(bodycenterx, 100);
-    ctx.lineTo(bodycenterx + 20, 80);
-    ctx.stroke();
-    ctx.closePath();
+// Checks for win by looking for "_"
+function checkForWin() {
+	if (dashesArray.indexOf("_") === -1) {
+		alert("You WIN!!! The Answer is " + currentWord);
+		numWins++;
+		document.getElementById("wins").innerHTML = numWins;
+		initialize();
+	}
 }
 
-function drawleftarm() {
-    ctx.beginPath();
-    ctx.moveTo(bodycenterx, 100);
-    ctx.lineTo(bodycenterx - 20, 110);
-    ctx.stroke();
-    ctx.closePath();
+document.onkeyup = function (event) {
+	if (!gameStarted) {
+		document.getElementById("letsPlay").innerHTML = "";
+		initialize();
+		document.getElementById("currentWord").innerHTML = wordAsDashes.split(",");
+		console.log(currentWord);
+		gameStarted = true;
+	}
+	else {
+		playGame(event.key);
+	}
 }
 
-function drawrightleg() {
-    ctx.beginPath();
-    ctx.moveTo(bodycenterx, 125);
-    ctx.lineTo(bodycenterx + 10, 155);
-    ctx.stroke();
-    ctx.closePath();
+// if player wins place image of corresponding park into right column
+
+function winnerDisplay() {
+    if (checkForWin === "You Win!!! The Answer is");
+    
 }
-
-function drawleftleg() {
-    ctx.beginPath();
-    ctx.moveTo(bodycenterx, 125);
-    ctx.lineTo(bodycenterx - 10, 155);
-    ctx.stroke();
-    ctx.closePath();
-}
-
-function drawnoose() {
-    ctx.strokeStyle = noosecolor;
-    ctx.beginPath();
-    ctx.moveTo(bodycenterx - 10, 40);
-    ctx.lineTo(bodycenterx - 5, 95);
-    ctx.stroke();
-    ctx.closePath();
-    ctx.save();
-    ctx.scale(1, .3);
-    ctx.beginPath();
-    ctx.arc(bodycenterx, 95 / .3, 8, 0, Math.PI * 2, false);
-    ctx.stroke();
-    ctx.closePath();
-    ctx.restore();
-    drawneck();
-    drawhead();
-}
-
-function drawneck() {
-    ctx.strokeStyle = bodycolor;
-    ctx.beginPath();
-    ctx.moveTo(bodycenterx, 90);
-    ctx.lineTo(bodycenterx, 95);
-    ctx.stroke();
-    ctx.closePath();
-}
-
-
-function init() {
-    ctx = document.getElementById('canvas').getContext('2d');
-    setupgame();
-    ctx.font = "bold 20pt Ariel";
-}
-
-function setupgame() {
-    var i;
-    var x;
-    var y;
-    var uniqueid;
-    var an = alphabet.length;
-    for (i = 0; i < an; i++) {
-        uniqueid = "a" + String(i);
-        d = document.createElement('alphabet');
-        d.innerHTML = (
-            "<div class = 'letters' id = '" + uniqueid + "'>" + alphabet[i] + "</div>");
-        document.body.appendChild(d);
-        thingelem = document.getElementById(uniqueid);
-        x = alphabetx + alphabetwidth * i;
-        y = alphabety;
-        thingelem.style.top = String(y) + "px";
-        thingelem.style.left = String(x) + "px";
-        thingelem.addEventListener('click', pickelement, false);
-    }
-    var ch = Math.floor(Math.random() * words.length);
-    secret = words[ch];
-    for (i = 0; i < secret.length; i++) {
-        uniqueid = "s" + String(i);
-        d = document.createElement('secret');
-        d.innerHTML = ("<div class='blanks' id='" + uniqueid + "'> ___ </div>");
-        document.body.appendChild(d);
-        thingelem = document.getElementById(uniqueid);
-        x = secretx + secretwidth * i;
-        y = secrety;
-        thingelem.style.top = String(y) + "px";
-        thingelem.style.left = String(x) + "px";
-    }
-    steps[cur]();
-    cur++;
-    return false;
-}
-
-function pickelement(ev) {
-    var not = true;
-    var picked = this.textContent;
-    var i;
-    var j;
-    var uniqueid;
-    var thingelem;
-    var out;
-    for (i = 0; i < secret.length; i++) {
-        if (picked === secret[i]) {
-            id = "s" + String(i);
-            document.getElementById(id).textContent = picked;
-            not = false;
-            lettersguessed++;
-            if (lettersguessed === secret.length) {
-                ctx.fillStyle = gallowscolor;
-                out = "Great job! 😀";
-                ctx.fillText(out, 200, 80);
-                ctx.fillText("Refresh the page to try again.", 200, 120);
-                for (j = 0; j < alphabet.length; j++) {
-                    uniqueid = "a" + String(j);
-                    thingelem = document.getElementById(uniqueid);
-                    thingelem.removeEventListener('click', pickelement, false);
-                }
-            }
-        }
-    }
-    if (not) {
-        steps[cur]();
-        cur++;
-        if (cur >= steps.length) {
-            for (i = 0; i < secret.length; i++) {
-                id = "s" + String(i);
-                document.getElementById(id).textContent = secret[i];
-            }
-            ctx.fillStyle = gallowscolor;
-            out = "Boo! 👻 You lost! 😕";
-            ctx.fillText(out, 200, 80);
-            ctx.fillText("Refresh the page & try again.", 200, 120);
-            for (j = 0; j < alphabet.length; j++) {
-                uniqueid = "a" + String(j);
-                thingelem = document.getElementById(uniqueid);
-                thingelem.removeEventListener('click', pickelement, false);
-            }
-        }
-    }
-    var id = this.id;
-    document.getElementById(id).style.display = "none";
-}
-  
-
-
-
